@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "React Code Grab",
+  "version": "0.1.0",
+  "description": "Click a React element in Chrome and resolve it back to the component source.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["http://127.0.0.1/*", "https://127.0.0.1/*", "<all_urls>"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Toggle React Code Grab"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["page-hook.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
