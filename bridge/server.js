@@ -37,18 +37,27 @@ function tryCommand(command, args) {
   });
 }
 
-async function openInEditor(file, line, column) {
-  const target = `${file}:${line}:${column}`;
-  const candidates = [
+function editorCandidates(target, line, column) {
+  const file = target.split(':')[0];
+
+  return [
     ['code', ['-g', target]],
     ['cursor', ['-g', target]],
-    ['webstorm', ['--line', String(line), file]]
+    ['webstorm', ['--line', String(line), file]],
+    ['open', ['-a', 'Cursor', '--args', '-g', target]],
+    ['open', ['-a', 'Visual Studio Code', '--args', '-g', target]],
+    ['open', ['-a', 'WebStorm', '--args', '--line', String(line), file]]
   ];
+}
+
+async function openInEditor(file, line, column) {
+  const target = `${file}:${line}:${column}`;
+  const candidates = editorCandidates(target, line, column);
 
   for (const [command, args] of candidates) {
     const opened = await tryCommand(command, args);
     if (opened) {
-      return command;
+      return `${command} ${args.join(' ')}`;
     }
   }
 
